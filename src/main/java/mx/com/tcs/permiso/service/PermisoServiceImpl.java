@@ -1,5 +1,6 @@
 package mx.com.tcs.permiso.service;
 
+import mx.com.tcs.permiso.exception.ItemNotFoundException;
 import mx.com.tcs.permiso.model.Permiso;
 import mx.com.tcs.permiso.model.repository.PermisoRepository;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
@@ -39,7 +40,6 @@ public class PermisoServiceImpl implements  IPermisoService {
      */
     @Override
     public ResponseEntity<List<PermisoDTO>> listAll() {
-
         return ResponseEntity.ok(getAllPermiso());
     }
 
@@ -49,6 +49,10 @@ public class PermisoServiceImpl implements  IPermisoService {
      */
     private List<PermisoDTO> getAllPermiso() {
         List<Permiso> permisoList = (List<Permiso>) repository.findAll();
+
+        if(permisoList.isEmpty()){
+            throw new ItemNotFoundException("The query to permiso table return empty list.");
+        }
 
         return permisoList.
                 stream().

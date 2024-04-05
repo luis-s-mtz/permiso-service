@@ -1,5 +1,6 @@
 package mx.com.tcs.permiso.service;
 
+import mx.com.tcs.permiso.exception.ItemNotFoundException;
 import mx.com.tcs.permiso.model.Permiso;
 import mx.com.tcs.permiso.model.repository.PermisoRepository;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
@@ -80,5 +81,16 @@ class PermisoServiceImplTest {
                 "Test StatusCode from ResponseEntity fails.");
         assertEquals(Objects.requireNonNull(permisoDtoList.getBody()).get(0).getId(),permisoDTO.getId(),
                 "Test id of first element from ResponseEntity fails.");
+    }
+
+    @DisplayName("Test listAll when the empty list throws a ItemNotFoundException happens")
+    @Test
+    void listAllThrowsItemNotFoundException() {
+        // Given
+        permisoList.clear();
+        Mockito.when(repository.findAll()).thenReturn(permisoList);
+
+        // When and Then
+        assertThrows(ItemNotFoundException.class, () ->  service.listAll());
     }
 }
