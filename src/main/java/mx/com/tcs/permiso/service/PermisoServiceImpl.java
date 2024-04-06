@@ -43,7 +43,13 @@ public class PermisoServiceImpl implements  IPermisoService {
      */
     @Override
     public ResponseEntity<List<PermisoDTO>> listAll() {
-        return ResponseEntity.ok(getAllPermiso());
+
+        List<PermisoDTO> permisoDTOList = getAllPermiso();
+
+        if (permisoDTOList.isEmpty()) {
+            throw new ItemNotFoundException("The query to permiso table return empty list.");
+        }
+        return ResponseEntity.ok(permisoDTOList);
     }
 
     /**
@@ -54,10 +60,6 @@ public class PermisoServiceImpl implements  IPermisoService {
 
         try {
             List<Permiso> permisoList = (List<Permiso>) repository.findAll();
-
-            if (permisoList.isEmpty()) {
-                throw new ItemNotFoundException("The query to permiso table return empty list.");
-            }
 
             return permisoList.
                     stream().
