@@ -1,6 +1,8 @@
 package mx.com.tcs.permiso.service;
 
+import lombok.extern.slf4j.Slf4j;
 import mx.com.tcs.permiso.exception.ItemNotFoundException;
+import mx.com.tcs.permiso.exception.PermisoSrvInternalServErrorException;
 import mx.com.tcs.permiso.model.Permiso;
 import mx.com.tcs.permiso.model.repository.PermisoRepository;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
@@ -16,6 +18,7 @@ import java.util.List;
  *
  * Class to implement methods used in the service layer of API catpermiso-service.
  */
+@Slf4j
 @Service
 public class PermisoServiceImpl implements  IPermisoService {
 
@@ -48,15 +51,21 @@ public class PermisoServiceImpl implements  IPermisoService {
      * @return a list of Permiso object.
      */
     private List<PermisoDTO> getAllPermiso() {
-        List<Permiso> permisoList = (List<Permiso>) repository.findAll();
 
-        if(permisoList.isEmpty()){
-            throw new ItemNotFoundException("The query to permiso table return empty list.");
+        try {
+            List<Permiso> permisoList = (List<Permiso>) repository.findAll();
+
+            if (permisoList.isEmpty()) {
+                throw new ItemNotFoundException("The query to permiso table return empty list.");
+            }
+
+            return permisoList.
+                    stream().
+                    map(permiso -> modelMapper.map(permiso, PermisoDTO.class)).
+                    toList();
+        } catch(Exception ex) {
+            log.error("Error in Service permiso API: {}",ex.getMessage());
+            throw new PermisoSrvInternalServErrorException(ex.getMessage());
         }
-
-        return permisoList.
-                stream().
-                map(permiso -> modelMapper.map(permiso, PermisoDTO.class)).
-                toList();
     }
 }

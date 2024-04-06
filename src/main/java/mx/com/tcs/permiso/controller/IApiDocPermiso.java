@@ -30,6 +30,6 @@ public interface IApiDocPermiso {
             @Content(schema = @Schema(implementation = PermisoDTO.class), mediaType = "application/json")})
     @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})
     @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})
-    @GetMapping("/permiso")
+    @GetMapping("/api/permiso")
     ResponseEntity<List<PermisoDTO>> getAll();
 }
