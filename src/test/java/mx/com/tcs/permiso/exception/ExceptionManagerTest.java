@@ -47,4 +47,30 @@ class ExceptionManagerTest {
         // Then
         assertEquals(HttpStatus.NOT_FOUND.value(), responseEntity.getStatusCode().value());
     }
+
+    @DisplayName("Test manage of exception PermisoServInternalServErrorException passing couple of params OK.")
+    @Test
+    void manageInternalServErrorException() {
+        // Given
+
+        // when
+        ResponseEntity<ErrorDTO> responseEntity = exceptionManager.manageInteranlServErrorExcpt(
+                new PermisoSrvInternalServErrorException("Esta es una exception por pruebas..."));
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseEntity.getStatusCode().value());
+    }
+
+    @DisplayName("Test manage of exception PermisoServInternalServErrorException passing couple of params OK.")
+    @Test
+    void manageInternalServErrorExceptionWithTwoParams() {
+        // Given
+
+        // when
+        ResponseEntity<ErrorDTO> responseEntity = exceptionManager.manageInteranlServErrorExcpt(
+                new PermisoSrvInternalServErrorException("Esta es una exception por pruebas...",new Throwable()));
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseEntity.getStatusCode().value());
+    }
 }

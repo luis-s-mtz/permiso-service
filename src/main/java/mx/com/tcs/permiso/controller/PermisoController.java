@@ -4,9 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
 import mx.com.tcs.permiso.service.IPermisoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;

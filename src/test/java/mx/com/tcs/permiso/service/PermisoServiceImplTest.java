@@ -1,6 +1,7 @@
 package mx.com.tcs.permiso.service;
 
 import mx.com.tcs.permiso.exception.ItemNotFoundException;
+import mx.com.tcs.permiso.exception.PermisoSrvInternalServErrorException;
 import mx.com.tcs.permiso.model.Permiso;
 import mx.com.tcs.permiso.model.repository.PermisoRepository;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
@@ -92,5 +93,16 @@ class PermisoServiceImplTest {
 
         // When and Then
         assertThrows(ItemNotFoundException.class, () ->  service.listAll());
+    }
+
+    @DisplayName("Test when throw an InternalServerErrorException happens")
+    @Test
+    void listAllThrowsInternalServerErrorException() {
+        // Given
+        permisoList.clear();
+        Mockito.when(repository.findAll()).thenThrow(PermisoSrvInternalServErrorException.class);
+
+        // When and Then
+        assertThrows(PermisoSrvInternalServErrorException.class, () ->  service.listAll());
     }
 }
