@@ -74,10 +74,6 @@ public class PermisoServiceImpl implements  IPermisoService {
         try {
             List<Permiso> permisoList = (List<Permiso>) repository.findAll();
 
-            LocalDateTime localDatTime = LocalDateTime.now();
-            if(((localDatTime.getSecond()) % 3) == 0){
-                Thread.sleep(3000);
-            }
             return permisoList.
                     stream().
                     map(permiso -> modelMapper.map(permiso, PermisoDTO.class)).
