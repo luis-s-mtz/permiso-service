@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
+ * @author luis
+ * @since 1.0
+ *
  * Configuration class to add properties related to API of catpermiso-service
  */
 @Configuration
