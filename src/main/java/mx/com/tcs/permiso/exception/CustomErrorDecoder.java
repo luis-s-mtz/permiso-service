@@ -48,14 +48,12 @@ public class CustomErrorDecoder implements ErrorDecoder {
     }
 
     private ErrorMessageDTO deserializeResponse(Response response) {
-        log.warn("response: {}",response);
         ErrorMessageDTO errorDTO = null;
         try (InputStream bodyIs = response.body().asInputStream()) {
             ObjectMapper mapper = new ObjectMapper();
             errorDTO = mapper.readValue(bodyIs, ErrorMessageDTO.class);
-            log.warn("errorDTO: {}",errorDTO);
         } catch (IOException e) {
-            throw new PermisoSrvInternalServErrorException("Error when deserialize response from feignclient: "+ e.getMessage());
+            throw new PermisoSrvInternalServErrorException("Error when deserialize response from FeignClient: "+ e.getMessage());
         }
         return errorDTO;
     }
