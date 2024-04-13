@@ -47,6 +47,11 @@ public class CustomErrorDecoder implements ErrorDecoder {
         }
     }
 
+    /**
+     * Mehtod used to deserialize Response object from client when the response is a Error.
+     * @param response Response from the FeignClient.
+     * @return The ErrorMessageDTO from the error of the client.
+     */
     private ErrorMessageDTO deserializeResponse(Response response) {
         ErrorMessageDTO errorDTO = null;
         try (InputStream bodyIs = response.body().asInputStream()) {
