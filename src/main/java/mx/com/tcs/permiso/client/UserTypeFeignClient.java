@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @since 1.0
  * Interface to create feign client to request tipousuario-service and get the description of the UserType objec.
  */
-@FeignClient(name = "tipousuario-service", path = "/api/tipousuario", url = "localhost:8091",
+@FeignClient(name = "tipousuario-service", path = "/api/tipousuario",
         configuration = FeignConfiguration.class, fallback = UserTypeFallback.class)
 public interface UserTypeFeignClient {
 

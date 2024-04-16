@@ -11,6 +11,7 @@ import mx.com.tcs.permiso.model.repository.PermisoRepository;
 import mx.com.tcs.permiso.model.repository.TipoUsuarioPermisoRepository;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
 import mx.com.tcs.permiso.model.response.PermisoTipoUsuarioDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
@@ -94,20 +95,13 @@ public class PermisoServiceImpl implements IPermisoService {
     @Override
     public ResponseEntity<PermisoTipoUsuarioDTO> findByParams(Integer idTipoUsuario) {
 
-        PermisoTipoUsuarioDTO permisoTipoUsuarioDTO;
-        ResponseEntity<UserTypeDTO> respUserTypeDTO = userTypeFeignClient.getById(idTipoUsuario);
+        PermisoTipoUsuarioDTO permisoTipoUsuarioDTO = getTipoUsuarioDTO(idTipoUsuario);
 
-        String tipoUsuario = respUserTypeDTO.getStatusCode().equals(HttpStatus.OK) ?
-                respUserTypeDTO.getBody().getDescription():
-                null;
-
-        if (tipoUsuario == null){
+        if (permisoTipoUsuarioDTO == null){
             log.error("Error in [{}] findByParams(): {}",
                     this.getClass().getName(),"Error al consultar informacion de feign client.");
             throw new PermisoSrvInternalServErrorException("Error al consultar informacion de feign client.");
         } else {
-            permisoTipoUsuarioDTO = new PermisoTipoUsuarioDTO();
-            permisoTipoUsuarioDTO.setTipoUsuario(tipoUsuario);
             List<TipoUsuarioPermiso> relationList = findPermisoByIdTipoUsuario(idTipoUsuario);
 
             List<Integer> ids = new ArrayList<>();
@@ -118,6 +112,24 @@ public class PermisoServiceImpl implements IPermisoService {
             permisoTipoUsuarioDTO.setPermisos(getPermisosByIds(ids));
         }
         return ResponseEntity.ok(permisoTipoUsuarioDTO);
+    }
+
+    /**
+     * Method to build a {@code PermisoTipoUsuarioDTO} object when call {@code UserTypeFeignClient} and use of the
+     * response the {@code description} field into the {@code tipoUsuario} attribute.
+     * @param idTipoUsuario Is the identifier of TipoUsuario entity and is the parametor to search the Permiso entites list.
+     * @return A PermisoTipoUsuario object with the tipoUsuario attribute filled by description field of response of UserTypeFeignClient.
+     */
+    private PermisoTipoUsuarioDTO getTipoUsuarioDTO(Integer idTipoUsuario) {
+
+        PermisoTipoUsuarioDTO permisoTipoUsuarioDTO = null;
+        ResponseEntity<UserTypeDTO> respUserTypeDTO = userTypeFeignClient.getById(idTipoUsuario);
+
+        if(HttpStatus.OK.equals(respUserTypeDTO.getStatusCode())) {
+            permisoTipoUsuarioDTO = new PermisoTipoUsuarioDTO();
+            permisoTipoUsuarioDTO.setTipoUsuario(respUserTypeDTO.getBody().getDescription());
+        }
+        return permisoTipoUsuarioDTO;
     }
 
     /**
