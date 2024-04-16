@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class ExceptionManager {
 
-    private static final String MESSAGE_NOT_FOUND = "Item(s) not found: ";
+    private static final String MESSAGE_NOT_FOUND = "Not found Error: ";
     private static final String NOTFOUND_EXPT_CLASSNAME = "ItemNotFoundException";
     private static final String MESSAGE_INTERNAL_SERV_ERR = "Internal Server Error: ";
     private static final String INTERNALSERVERR_EXPT_CLASSNAME = "PermisoSrvInternalServErrorException";

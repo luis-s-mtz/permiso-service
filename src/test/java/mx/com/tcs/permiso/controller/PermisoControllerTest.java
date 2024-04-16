@@ -1,10 +1,7 @@
 package mx.com.tcs.permiso.controller;
 
-import mx.com.tcs.permiso.model.Permiso;
-import mx.com.tcs.permiso.model.repository.PermisoRepository;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
 import mx.com.tcs.permiso.service.IPermisoService;
-import mx.com.tcs.permiso.service.PermisoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

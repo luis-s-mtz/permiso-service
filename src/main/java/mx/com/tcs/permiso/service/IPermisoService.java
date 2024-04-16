@@ -1,6 +1,7 @@
 package mx.com.tcs.permiso.service;
 
 import mx.com.tcs.permiso.model.response.PermisoDTO;
+import mx.com.tcs.permiso.model.response.PermisoTipoUsuarioDTO;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -18,5 +19,12 @@ public interface IPermisoService {
      * @return a response entity of list or Permiso object.
      */
     ResponseEntity<List<PermisoDTO>> listAll();
+
+    /**
+     * Method to return all records of Permiso object find by Id TipoUsuario.
+     * @param idTipoUsuario The identifier of TipoUsuario entity object.
+     * @return A PermisoTipoUsuarioDTO object.
+     */
+    ResponseEntity<PermisoTipoUsuarioDTO> findByParams(Integer idTipoUsuario);
 
 }

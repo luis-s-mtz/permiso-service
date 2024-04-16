@@ -26,7 +26,7 @@ public class CircuitBreakerConfiguration {
     @Bean
     public Customizer<Resilience4JCircuitBreakerFactory> globalCustomConfiguration() {
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
-                .timeoutDuration(Duration.ofSeconds(2))
+                .timeoutDuration(Duration.ofSeconds(3))
                 .build();
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 .failureRateThreshold(50)
