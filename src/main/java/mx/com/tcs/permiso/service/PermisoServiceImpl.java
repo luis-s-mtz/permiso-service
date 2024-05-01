@@ -127,7 +127,16 @@ public class PermisoServiceImpl implements IPermisoService {
 
         if(HttpStatus.OK.equals(respUserTypeDTO.getStatusCode())) {
             permisoTipoUsuarioDTO = new PermisoTipoUsuarioDTO();
-            permisoTipoUsuarioDTO.setTipoUsuario(respUserTypeDTO.getBody().getDescription());
+
+            if (respUserTypeDTO.hasBody()) {
+                UserTypeDTO rspUserTypeDTO = respUserTypeDTO.getBody();
+                if (rspUserTypeDTO != null) {
+                    permisoTipoUsuarioDTO.setTipoUsuario(
+                            null == rspUserTypeDTO.getDescription() ?
+                                    "" : rspUserTypeDTO.getDescription());
+                }
+            }
+
         }
         return permisoTipoUsuarioDTO;
     }
