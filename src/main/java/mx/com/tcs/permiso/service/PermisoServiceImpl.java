@@ -125,18 +125,14 @@ public class PermisoServiceImpl implements IPermisoService {
         PermisoTipoUsuarioDTO permisoTipoUsuarioDTO = null;
         ResponseEntity<UserTypeDTO> respUserTypeDTO = userTypeFeignClient.getById(idTipoUsuario);
 
-        if(HttpStatus.OK.equals(respUserTypeDTO.getStatusCode())) {
+        if(HttpStatus.OK.equals(respUserTypeDTO.getStatusCode()) && respUserTypeDTO.hasBody()) {
             permisoTipoUsuarioDTO = new PermisoTipoUsuarioDTO();
 
-            if (respUserTypeDTO.hasBody()) {
-                UserTypeDTO rspUserTypeDTO = respUserTypeDTO.getBody();
-                if (rspUserTypeDTO != null) {
-                    permisoTipoUsuarioDTO.setTipoUsuario(
-                            null == rspUserTypeDTO.getDescription() ?
-                                    "" : rspUserTypeDTO.getDescription());
-                }
-            }
+            UserTypeDTO usrTypeDTO = respUserTypeDTO.getBody();
 
+            if (StringUtils.isNotEmpty(usrTypeDTO.getDescription())) {
+                permisoTipoUsuarioDTO.setTipoUsuario(usrTypeDTO.getDescription());
+            }
         }
         return permisoTipoUsuarioDTO;
     }
@@ -176,7 +172,7 @@ public class PermisoServiceImpl implements IPermisoService {
     private List<PermisoDTO> getPermisosByIds(List<Integer> ids) {
 
         try {
-            List<Permiso> permisoList = (List<Permiso>) repository.findByIdInAndActivo(ids, ACTIVE_ROWS);
+            List<Permiso> permisoList = repository.findByIdInAndActivo(ids, ACTIVE_ROWS);
 
             return permisoList.
                     stream().
