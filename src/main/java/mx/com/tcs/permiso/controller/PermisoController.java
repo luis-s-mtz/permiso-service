@@ -1,6 +1,7 @@
 package mx.com.tcs.permiso.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import mx.com.tcs.permiso.model.request.PermisoRequestDTO;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
 import mx.com.tcs.permiso.model.response.PermisoTipoUsuarioDTO;
 import mx.com.tcs.permiso.service.IPermisoService;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * Controller class to define endpoints of API catpermiso-service.
  */
-@Tag(name = "Permiso", description = "")
+@Tag(name = "Permiso")
 @RestController()
 public class PermisoController implements IApiDocPermiso {
 
@@ -27,7 +28,7 @@ public class PermisoController implements IApiDocPermiso {
 
     /**
      * Constructor of the Controller class
-     * @param permisoService
+     * @param permisoService Parameter used in constructor, to call service layer.
      */
     @Autowired
     public PermisoController(IPermisoService permisoService) {
@@ -52,5 +53,16 @@ public class PermisoController implements IApiDocPermiso {
     @Override
     public ResponseEntity<PermisoTipoUsuarioDTO> findByParams(Integer idTipoUsuario) {
         return permisoService.findByParams(idTipoUsuario);
+    }
+
+    /**
+     * Method used as entry point of the POST function that save a record in  Permiso catalog.
+     *
+     * @param permisoReqDTO Request used in the POST method to save a record.
+     * @return a ResponseEntity of PermisoDTO object.
+     */
+    @Override
+    public ResponseEntity<PermisoDTO> create(PermisoRequestDTO permisoReqDTO) {
+        return permisoService.create(permisoReqDTO);
     }
 }

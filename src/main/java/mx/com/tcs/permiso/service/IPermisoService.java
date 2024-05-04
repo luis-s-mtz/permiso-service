@@ -1,5 +1,6 @@
 package mx.com.tcs.permiso.service;
 
+import mx.com.tcs.permiso.model.request.PermisoRequestDTO;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
 import mx.com.tcs.permiso.model.response.PermisoTipoUsuarioDTO;
 import org.springframework.http.ResponseEntity;
@@ -27,4 +28,11 @@ public interface IPermisoService {
      */
     ResponseEntity<PermisoTipoUsuarioDTO> findByParams(Integer idTipoUsuario);
 
+    /**
+     * Method to add a record in the Permiso catalog.
+     *
+     * @param permisoReqDTO The DTO object with information to add record in the Permiso catalogue.
+     * @return The Permiso object added to the database.
+     */
+    ResponseEntity<PermisoDTO> create(PermisoRequestDTO permisoReqDTO);
 }

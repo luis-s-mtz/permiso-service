@@ -9,6 +9,7 @@ import mx.com.tcs.permiso.model.client.UserTypeDTO;
 import mx.com.tcs.permiso.model.entity.TipoUsuarioPermiso;
 import mx.com.tcs.permiso.model.repository.PermisoRepository;
 import mx.com.tcs.permiso.model.repository.TipoUsuarioPermisoRepository;
+import mx.com.tcs.permiso.model.request.PermisoRequestDTO;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
 import mx.com.tcs.permiso.model.response.PermisoTipoUsuarioDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -182,6 +183,28 @@ public class PermisoServiceImpl implements IPermisoService {
             log.error("Error in [{}] in getPermisoByIds: {}",this.getClass().getName(),ex.getMessage());
             throw new PermisoSrvInternalServErrorException(ex.getMessage());
         }
+    }
+
+    /**
+     * Method to add a record in the Permiso catalog.
+     *
+     * @param permisoReqDTO The DTO object with information to add record in the Permiso catalogue.
+     * @return The Permiso object added to the database.
+     */
+    @Override
+    public ResponseEntity<PermisoDTO> create(PermisoRequestDTO permisoReqDTO) {
+        CircuitBreaker circtBreakCreate = circtBreakFactory.create("circtBreakCreate");
+
+        Permiso permiso = circtBreakCreate.run(
+                () -> getSave(permisoReqDTO), throwable -> {
+                    throw new PermisoSrvInternalServErrorException("Creation in permiso table fails.");}
+        );
+
+        return ResponseEntity.ok(modelMapper.map(permiso,PermisoDTO.class));
+    }
+
+    private Permiso getSave(PermisoRequestDTO permisoReqDTO) {
+        return repository.save(modelMapper.map(permisoReqDTO, Permiso.class));
     }
 
     /**

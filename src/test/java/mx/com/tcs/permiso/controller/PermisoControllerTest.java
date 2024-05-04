@@ -1,5 +1,6 @@
 package mx.com.tcs.permiso.controller;
 
+import mx.com.tcs.permiso.model.request.PermisoRequestDTO;
 import mx.com.tcs.permiso.model.response.PermisoDTO;
 import mx.com.tcs.permiso.model.response.PermisoTipoUsuarioDTO;
 import mx.com.tcs.permiso.service.IPermisoService;
@@ -29,6 +30,8 @@ class PermisoControllerTest {
 
     private ResponseEntity<List<PermisoDTO>> response;
     private ResponseEntity<PermisoTipoUsuarioDTO> respFindByParams;
+    private PermisoRequestDTO permisoReqDTO;
+    private ResponseEntity<PermisoDTO> responseCreate;
 
     @BeforeEach
     void setUp() {
@@ -39,6 +42,9 @@ class PermisoControllerTest {
 
         response = ResponseEntity.ok(permisoDTOList);
         respFindByParams = getRespFindByParams();
+
+        permisoReqDTO = getPermisoRequestDTO();
+        responseCreate = getResponseCreate();
     }
 
     @DisplayName("Test listAll when result is OK")
@@ -67,6 +73,22 @@ class PermisoControllerTest {
 
         // Then
         assertEquals(respFindByParams.getStatusCode(), responseEntity.getStatusCode(),
+                "Test HTTP Status from ResponseEntity fails.");
+    }
+
+    @DisplayName("Test create method when result is OK")
+    @Test
+    void createIsOk() {
+        // Given
+        Mockito.when(
+                service.create(Mockito.any(PermisoRequestDTO.class))
+        ).thenReturn(responseCreate);
+
+        // When
+        ResponseEntity<PermisoDTO> responseEntity = controller.create(permisoReqDTO);
+
+        // Then
+        assertEquals(responseCreate.getStatusCode(), responseEntity.getStatusCode(),
                 "Test HTTP Status from ResponseEntity fails.");
     }
 
@@ -108,7 +130,7 @@ class PermisoControllerTest {
         return permisoDTO;
     }
 
-    private  PermisoDTO getPermisoDTOEnfermedad() {
+    private PermisoDTO getPermisoDTOEnfermedad() {
         PermisoDTO permisoDTO = new PermisoDTO();
         permisoDTO.setId(4);
         permisoDTO.setNombre("Permiso por enfermedad");
@@ -117,5 +139,20 @@ class PermisoControllerTest {
         permisoDTO.setIdPadre(2);
         permisoDTO.setIcono("/images/icon_check_health.gif");
         return permisoDTO;
+    }
+
+    private ResponseEntity<PermisoDTO> getResponseCreate() {
+        PermisoDTO permisoDTO = getPermisoDTOAcademico();
+        return ResponseEntity.ok(permisoDTO);
+    }
+
+    private PermisoRequestDTO getPermisoRequestDTO() {
+        PermisoRequestDTO permisoReqDTO = new PermisoRequestDTO();
+        permisoReqDTO.setNombre("Academico");
+        permisoReqDTO.setDescripcion("Presentacion de examen profesional");
+        permisoReqDTO.setActivo(1);
+        permisoReqDTO.setIdPadre(1);
+        permisoReqDTO.setIcono("/images/icon_school.gif");
+        return permisoReqDTO;
     }
 }
