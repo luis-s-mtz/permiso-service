@@ -4,7 +4,6 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
-import mx.com.tcs.permiso.exception.ItemNotFoundException;
 import mx.com.tcs.permiso.exception.PermisoSrvInternalServErrorException;
 import mx.com.tcs.permiso.model.entity.Permiso;
 import mx.com.tcs.permiso.model.repository.PermisoRepository;
@@ -24,13 +23,10 @@ import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuit
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

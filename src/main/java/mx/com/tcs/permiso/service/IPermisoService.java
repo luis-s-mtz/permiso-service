@@ -35,4 +35,21 @@ public interface IPermisoService {
      * @return The Permiso object added to the database.
      */
     ResponseEntity<PermisoDTO> create(PermisoRequestDTO permisoReqDTO);
+
+    /**
+     * Method to get a record by Id in the Permiso catalog.
+     *
+     * @param id The identifier to find a record in Permiso catalog.
+     * @return The Permiso object find by Id.
+     */
+    ResponseEntity<PermisoDTO> getById(Integer id);
+
+    /**
+     * Method to execute a partial update of the record in the Permiso catalog find by Id.
+     *
+     * @param id The identifier to find a record to update in Permiso catalog.
+     * @param permisoReqDTO The DTO object with partial information to update the record in the Permiso catalogue.
+     * @return The Permiso object added to the database.
+     */
+    ResponseEntity<PermisoDTO> update(Integer id, PermisoRequestDTO permisoReqDTO);
 }

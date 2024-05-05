@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ class PermisoControllerTest {
     private ResponseEntity<PermisoTipoUsuarioDTO> respFindByParams;
     private PermisoRequestDTO permisoReqDTO;
     private ResponseEntity<PermisoDTO> responseCreate;
+    private ResponseEntity<PermisoDTO> responseById;
+    private PermisoRequestDTO permisoUpdtReqDTO;
 
     @BeforeEach
     void setUp() {
@@ -45,6 +48,10 @@ class PermisoControllerTest {
 
         permisoReqDTO = getPermisoRequestDTO();
         responseCreate = getResponseCreate();
+
+        responseById = getResponseById();
+
+        permisoUpdtReqDTO = getPermisoRequestDTO();
     }
 
     @DisplayName("Test listAll when result is OK")
@@ -89,6 +96,39 @@ class PermisoControllerTest {
 
         // Then
         assertEquals(responseCreate.getStatusCode(), responseEntity.getStatusCode(),
+                "Test HTTP Status from ResponseEntity fails.");
+    }
+
+    @DisplayName("Test findById when result is OK")
+    @Test
+    void testfindById() {
+        // Given
+        int id = 3;
+        Mockito.when(service.getById(Mockito.anyInt())).thenReturn(responseById);
+
+        // When
+        ResponseEntity<PermisoDTO> response = controller.getById(id);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "Test HTTP Status from ResponseEntity fails.");
+    }
+
+    @DisplayName("Test update when result is OK")
+    @Test
+    void update() {
+        // Given
+        int id = 3;
+        permisoUpdtReqDTO.setActivo(0);
+        Mockito.when(
+                service.update(Mockito.anyInt(),Mockito.any(PermisoRequestDTO.class))
+        ).thenReturn(responseById);
+
+        // When
+        ResponseEntity<PermisoDTO> response = controller.update(id,permisoUpdtReqDTO);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode(),
                 "Test HTTP Status from ResponseEntity fails.");
     }
 
@@ -154,5 +194,9 @@ class PermisoControllerTest {
         permisoReqDTO.setIdPadre(1);
         permisoReqDTO.setIcono("/images/icon_school.gif");
         return permisoReqDTO;
+    }
+
+    private ResponseEntity<PermisoDTO> getResponseById() {
+        return ResponseEntity.ok(getPermisoDTOAcademicoExam());
     }
 }

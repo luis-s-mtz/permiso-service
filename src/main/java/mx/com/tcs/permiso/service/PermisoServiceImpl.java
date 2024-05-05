@@ -203,8 +203,139 @@ public class PermisoServiceImpl implements IPermisoService {
         return ResponseEntity.ok(modelMapper.map(permiso,PermisoDTO.class));
     }
 
+    /**
+     * Method to get a record by Id in the Permiso catalog.
+     *
+     * @param id The identifier to find a record in Permiso catalog.
+     * @return The Permiso object find by Id.
+     */
+    @Override
+    public ResponseEntity<PermisoDTO> getById(Integer id) {
+        CircuitBreaker circtBreakCreate = circtBreakFactory.create("circtBreakGetById");
+
+        return ResponseEntity.ok(
+                circtBreakCreate.run(
+                        () -> getPermisoById(id), throwable -> {
+                            throw new PermisoSrvInternalServErrorException(
+                                    "Query by Id in permiso table fails.");
+                        }
+                )
+        );
+    }
+
+    /**
+     * Method to execute a partial update of the record in the Permiso catalog find by Id.
+     *
+     * @param id            The identifier to find a record to update in Permiso catalog.
+     * @param permisoReqDTO The DTO object with partial information to update the record in the Permiso catalogue.
+     * @return The Permiso object added to the database.
+     */
+    @Override
+    public ResponseEntity<PermisoDTO> update(
+            Integer id, PermisoRequestDTO permisoReqDTO) {
+        CircuitBreaker circtBreakCreate = circtBreakFactory.create("circtBreakUpdate");
+
+        return ResponseEntity.ok(
+                circtBreakCreate.run(
+                        () -> partialUpdate(id, permisoReqDTO),
+                        throwable -> {
+                            throw new PermisoSrvInternalServErrorException(
+                                    "Update in permiso table fails.");
+                        }
+                )
+        );
+    }
+
+    private PermisoDTO partialUpdate(
+            Integer id, PermisoRequestDTO permisoUpdReqDTO){
+        Permiso permiso = findById(id);
+
+        setUpdateValues(permiso, permisoUpdReqDTO);
+        save(permiso);
+        return modelMapper.map(permiso,PermisoDTO.class);
+    }
+
+    /**
+     * Add values come in PATCH request to use in the permiso entity to update.
+     * @param permiso Permiso object find by Id to add properties to update.
+     * @param permisoUpdReqDTO The request object to get values to add into entity to update.
+     * @return Permiso object updated.
+     */
+    private Permiso setUpdateValues(
+            Permiso permiso, PermisoRequestDTO permisoUpdReqDTO){
+
+        if(permisoUpdReqDTO.getNombre() != null) {
+            permiso.setNombre(permisoUpdReqDTO.getNombre());
+        }
+
+        if(permisoUpdReqDTO.getDescripcion() != null) {
+            permiso.setDescripcion(permisoUpdReqDTO.getDescripcion());
+        }
+
+        if(permisoUpdReqDTO.getIdPadre() != null) {
+            permiso.setIdPadre(permisoUpdReqDTO.getIdPadre());
+        }
+
+        if(permisoUpdReqDTO.getActivo() != null) {
+            permiso.setActivo(permisoUpdReqDTO.getActivo());
+        }
+
+        if(permisoUpdReqDTO.getIcono() != null) {
+            permiso.setIcono(permisoUpdReqDTO.getIcono());
+        }
+
+        return permiso;
+    }
+
+    /**
+     * Method to query from Permiso entity by id.
+     * @return A DTO of Permiso object.
+     */
+    private PermisoDTO getPermisoById(Integer id) {
+
+        try {
+            return modelMapper.map(findById(id), PermisoDTO.class);
+        } catch(Exception ex) {
+            log.error("Error in getPermisoById: {}", ex.getMessage());
+            throw new PermisoSrvInternalServErrorException(ex.getMessage());
+        }
+    }
+
+    /**
+     * Method to execute repository function findById using identifier.
+     * @param id Identifier to find a record in the table Permiso.
+     * @return Permiso object obtained from database.
+     */
+    private Permiso findById(Integer id) {
+        try {
+            return repository.findByIdAndActivo(id, ACTIVE_ROWS);
+        } catch(Exception ex) {
+            log.error("Error when findByIdAndActivo: {}", ex.getMessage());
+            throw new PermisoSrvInternalServErrorException(ex.getMessage());
+        }
+    }
+
+    /**
+     * Method to store a record in Permiso table.
+     * @param permisoReqDTO Request object to store in the Permiso table.
+     * @return A Permiso entity stored in the database.
+     */
     private Permiso getSave(PermisoRequestDTO permisoReqDTO) {
-        return repository.save(modelMapper.map(permisoReqDTO, Permiso.class));
+        return save(modelMapper.map(permisoReqDTO, Permiso.class));
+    }
+
+    /**
+     * Method to store a record in Permiso table.
+     * @param permiso Permiso object to store in table.
+     * @return A Permiso entity stored in the database.
+     */
+    private Permiso save(Permiso permiso) {
+        try {
+            return repository.save(permiso);
+        } catch(Exception ex) {
+            log.error("Error when save: {}", ex.getMessage());
+            throw new PermisoSrvInternalServErrorException(ex.getMessage());
+        }
     }
 
     /**
