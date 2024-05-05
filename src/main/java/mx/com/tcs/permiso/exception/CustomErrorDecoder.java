@@ -36,7 +36,7 @@ public class CustomErrorDecoder implements ErrorDecoder {
 
         switch (response.status()) {
             case 400:
-                return new BadRequestException();
+                return new BadRequestException("Bad Request Error");
             case 404:
                 return new ItemNotFoundException("Not found in request to FeignClient: " + errorMessage + ".");
             case 500:

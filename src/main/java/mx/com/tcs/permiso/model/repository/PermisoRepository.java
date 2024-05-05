@@ -22,4 +22,12 @@ public interface PermisoRepository  extends CrudRepository<Permiso,Integer> {
      * @return List of Permiso entities.
      */
     List<Permiso> findByIdInAndActivo(List<Integer> ids, Integer activo);
+
+    /**
+     * Method to find Permiso where the query parameter are the Identifier and active status.
+     * @param id Identifier of Permiso.
+     * @param activo Active status of record.
+     * @return List of Permiso entities.
+     */
+    Permiso findByIdAndActivo(Integer id, Integer activo);
 }
