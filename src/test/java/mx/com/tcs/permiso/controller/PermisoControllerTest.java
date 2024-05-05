@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+import static mx.com.tcs.permiso.utils.PermisoTestUtils.getResponseDelete;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,6 +36,7 @@ class PermisoControllerTest {
     private ResponseEntity<PermisoDTO> responseCreate;
     private ResponseEntity<PermisoDTO> responseById;
     private PermisoRequestDTO permisoUpdtReqDTO;
+    private ResponseEntity<Void> responseDelete;
 
     @BeforeEach
     void setUp() {
@@ -52,6 +54,7 @@ class PermisoControllerTest {
         responseById = getResponseById();
 
         permisoUpdtReqDTO = getPermisoRequestDTO();
+         responseDelete = getResponseDelete();
     }
 
     @DisplayName("Test listAll when result is OK")
@@ -129,6 +132,23 @@ class PermisoControllerTest {
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "Test HTTP Status from ResponseEntity fails.");
+    }
+
+    @DisplayName("Test logic delete when result is OK")
+    @Test
+    void delete() {
+        // Given
+        int id = 3;
+        Mockito.when(
+                service.delete(Mockito.anyInt())
+        ).thenReturn(responseDelete);
+
+        // When
+        ResponseEntity<Void> response = controller.delete(id);
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode(),
                 "Test HTTP Status from ResponseEntity fails.");
     }
 

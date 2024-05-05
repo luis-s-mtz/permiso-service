@@ -7,6 +7,7 @@ import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import mx.com.tcs.permiso.model.entity.Permiso;
 import mx.com.tcs.permiso.model.request.PermisoRequestDTO;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -69,7 +70,6 @@ public class PermisoTestUtils {
         permisoReqDTO.setNombre(null);
         permisoReqDTO.setDescripcion(null);
         permisoReqDTO.setActivo(null);
-        permisoReqDTO.setIdPadre(null);
         permisoReqDTO.setIcono(null);
         return permisoReqDTO;
     }
@@ -83,5 +83,9 @@ public class PermisoTestUtils {
         permiso.setIdPadre(1);
         permiso.setIcono("/images/icon_school.gif");
         return permiso;
+    }
+
+    public static ResponseEntity<Void> getResponseDelete() {
+        return ResponseEntity.noContent().build();
     }
 }

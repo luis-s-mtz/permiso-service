@@ -90,4 +90,15 @@ public class PermisoController implements IApiDocPermiso {
             @PathVariable("id") Integer id, PermisoRequestDTO permisoReqDTO) {
         return permisoService.update(id,permisoReqDTO);
     }
+
+    /**
+     * Method used as entry point of the DELETE function that execute a logic delete of Permiso catalog.
+     *
+     * @param id Identifier of the record stored in Permiso catalog to delete.
+     * @return Empty response when execute the logic delete.
+     */
+    @Override
+    public ResponseEntity<Void> delete(Integer id) {
+        return permisoService.delete(id);
+    }
 }

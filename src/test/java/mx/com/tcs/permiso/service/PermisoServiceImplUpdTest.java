@@ -101,7 +101,7 @@ class PermisoServiceImplUpdTest {
 
     @DisplayName("Test when update using circuit breaker throw an InternalServerErrorException happens")
     @Test
-    void createWhenExceptionHappensInCircuitBreaker() {
+    void updateWhenExceptionHappensInCircuitBreaker() {
         // Given
         int id = 1;
         Mockito.when(
@@ -120,6 +120,54 @@ class PermisoServiceImplUpdTest {
         // When and Then
         assertThrows(PermisoSrvInternalServErrorException.class,
                 () ->  service.update(id,permisoUpdReqDTO)
+        );
+    }
+
+    @DisplayName("Test delete method when result is OK")
+    @Test
+    void deleteIsOk() {
+
+        // Given
+        int id = 1;
+        Mockito.when(
+                circtBreakFactory.create(Mockito.anyString())
+        ).thenReturn(circtBreakerTest);
+        Mockito.when(
+                repository.findByIdAndActivo(Mockito.anyInt(), Mockito.anyInt())
+        ).thenReturn(permiso);
+        Mockito.when(
+                repository.save(Mockito.any(Permiso.class))
+        ).thenReturn(permiso);
+
+        // When
+        ResponseEntity<Void> responseEntity = service.delete(id);
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT,responseEntity.getStatusCode(),
+                "Test HTTP Status from ResponseEntity fails.");
+    }
+
+    @DisplayName("Test when logic delete using circuit breaker throw an InternalServerErrorException happens")
+    @Test
+    void deleteWhenExceptionHappensInCircuitBreaker() {
+        // Given
+        int id = 1;
+        Mockito.when(
+                circtBreakFactory.create(Mockito.anyString())
+        ).thenReturn(circtBreakerTest);
+        Mockito.when(
+                repository.findByIdAndActivo(Mockito.anyInt(), Mockito.anyInt())
+        ).thenReturn(permiso);
+        Mockito.when(
+                repository.save(Mockito.any(Permiso.class))
+        ).thenAnswer(
+                thr -> {
+                    throw new RuntimeException("SQL error in test logic delete.");
+                });
+
+        // When and Then
+        assertThrows(PermisoSrvInternalServErrorException.class,
+                () ->  service.delete(id)
         );
     }
 }

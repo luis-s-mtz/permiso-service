@@ -52,4 +52,12 @@ public interface IPermisoService {
      * @return The Permiso object added to the database.
      */
     ResponseEntity<PermisoDTO> update(Integer id, PermisoRequestDTO permisoReqDTO);
+
+    /**
+     * Method to get a logic delete of the record, using the identifier in the Permiso catalog.
+     *
+     * @param id The identifier to execute a logic delete of the record in Permiso catalog.
+     * @return Empty response.
+     */
+    ResponseEntity<Void> delete(Integer id);
 }

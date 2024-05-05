@@ -33,7 +33,14 @@ import java.util.List;
 @Service
 public class PermisoServiceImpl implements IPermisoService {
 
+    /**
+     * Identifier of the active rows in the Permiso table.
+     */
     private static final Integer ACTIVE_ROWS = 1;
+    /**
+     * Identifier of the inactive or logic delete in the row of the Permiso table.
+     */
+    private static final Integer INACTIVE_ROW = 0;
     /**
      * Bean of the repository.
      */
@@ -246,10 +253,41 @@ public class PermisoServiceImpl implements IPermisoService {
         );
     }
 
-    private PermisoDTO partialUpdate(
-            Integer id, PermisoRequestDTO permisoUpdReqDTO){
-        Permiso permiso = findById(id);
+    /**
+     * Method to get a logic delete of the record, using the identifier in the Permiso catalog.
+     *
+     * @param id The identifier to execute a logic delete of the record in Permiso catalog.
+     * @return Empty response.
+     */
+    @Override
+    public ResponseEntity<Void> delete(Integer id) {
+        CircuitBreaker circtBreakCreate = circtBreakFactory.create("circtBreakUpdate");
 
+        PermisoRequestDTO permisoDelReqDTO = new PermisoRequestDTO();
+        permisoDelReqDTO.setActivo(INACTIVE_ROW);
+
+        circtBreakCreate.run(
+                () -> partialUpdate(id, permisoDelReqDTO),
+                throwable -> {
+                    throw new PermisoSrvInternalServErrorException(
+                            "Logic delete in permiso table fails.");
+                }
+        );
+
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Method to wrap the code to execute the update using PATCH function in API of permiso-service.
+     * @param id Identifier of the record to execute the update process.
+     * @param permisoUpdReqDTO Request DTO of permiso object to execute update, the parameters are: name, description,
+     *                         identifier of the category and icon.
+     * @return The DTO of the Permiso entity updated.
+     */
+    private PermisoDTO partialUpdate(
+            Integer id, PermisoRequestDTO permisoUpdReqDTO) {
+
+        Permiso permiso = findById(id);
         setUpdateValues(permiso, permisoUpdReqDTO);
         save(permiso);
         return modelMapper.map(permiso,PermisoDTO.class);
@@ -274,10 +312,6 @@ public class PermisoServiceImpl implements IPermisoService {
 
         if(permisoUpdReqDTO.getIdPadre() != null) {
             permiso.setIdPadre(permisoUpdReqDTO.getIdPadre());
-        }
-
-        if(permisoUpdReqDTO.getActivo() != null) {
-            permiso.setActivo(permisoUpdReqDTO.getActivo());
         }
 
         if(permisoUpdReqDTO.getIcono() != null) {
